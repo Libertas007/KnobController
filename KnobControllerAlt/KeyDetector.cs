@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-class GlobalKeyboardHookEventArgs : HandledEventArgs
+public class GlobalKeyboardHookEventArgs : HandledEventArgs
 {
     public GlobalKeyboardHook.KeyboardState KeyboardState { get; private set; }
     public GlobalKeyboardHook.LowLevelKeyboardInputEvent KeyboardData { get; private set; }
@@ -20,7 +20,7 @@ class GlobalKeyboardHookEventArgs : HandledEventArgs
 }
 
 //Based on https://gist.github.com/Stasonix
-class GlobalKeyboardHook : IDisposable
+public class GlobalKeyboardHook : IDisposable
 {
     public event EventHandler<GlobalKeyboardHookEventArgs> KeyboardPressed;
 
@@ -179,7 +179,7 @@ class GlobalKeyboardHook : IDisposable
     public const int VkTab = 0x09;
     public const int VkEscape = 0x18;
     public const int VkControl = 0x11;
-    const int KfAltdown = 0x2000;
+    public const int KfAltdown = 0x2000;
     public const int LlkhfAltdown = (KfAltdown >> 8);
 
     public IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam)
