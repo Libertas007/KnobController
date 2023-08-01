@@ -14,20 +14,18 @@ public class Detection
     private void OnKeyPressed(object sender, GlobalKeyboardHookEventArgs e)
     {
         if (e.KeyboardState == GlobalKeyboardHook.KeyboardState.KeyUp) return;
+
+        Key key = Tools.CodeToKey(e.KeyboardData.VirtualCode);
+
+        if (key == Key.Other) return;
         
-        MessageBox.Show($@"flags: {e.KeyboardData.Flags}    key: {e.KeyboardData.VirtualCode}   state: {e.KeyboardState}");
+        Actions.RunActionForKey(key, Config.meta);
+        
         e.Handled = true;
-
-        /*if (e.KeyboardData.Flags == GlobalKeyboardHook.KfAltdown)
-        {
-
-            MessageBox.Show($@"{(Keys)e.KeyboardData.VirtualCode} has been pressed.", "Key pressed", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            e.Handled = true;
-        }*/
     }
 }
 
-public enum Keys
+public enum Key
 {
     Action1,
     Action2,
@@ -42,19 +40,19 @@ public enum Keys
 
 public class Tools
 {
-    public static Keys CodeToKey(int code)
+    public static Key CodeToKey(int code)
     {
         switch (code)
         {
-            case 0x61: return Keys.Action1;
-            case 0x62: return Keys.Action2;
-            case 0x63: return Keys.Action3;
-            case 0x64: return Keys.Action4;
-            case 0x65: return Keys.Action5;
-            case 0x66: return Keys.Action6;
-            case 0x67: return Keys.Action7;
-            case 0x68: return Keys.Action8;
-            default: return Keys.Other;
+            case 0x80: return Key.Action1;
+            case 0x81: return Key.Action2;
+            case 0x82: return Key.Action3;
+            case 0x83: return Key.Action4;
+            case 0x84: return Key.Action5;
+            case 0x85: return Key.Action6;
+            case 0x86: return Key.Action7;
+            case 0x87: return Key.Action8;
+            default: return Key.Other;
         }
     }
 }
