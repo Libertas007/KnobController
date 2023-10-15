@@ -132,7 +132,7 @@ public class Effects
 
 public class Config
 {
-    public static readonly string configFile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\.knobcontroller\\config.yaml";
+    public static readonly string configFile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\.comsender\\config.yaml";
     private static ConfigFileStructure data;
     private static bool hasChanged = false;
     public static readonly string defaultConfig = @"
@@ -180,7 +180,7 @@ meta: false
     {
         hasChanged = true;
         data.meta = value;
-        meta = true;
+        meta = value;
     }
 }
 

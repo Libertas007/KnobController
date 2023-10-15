@@ -13,6 +13,8 @@ static class Program
 
         Detection detection = new Detection();
         detection.Setup();
+        
+        Controller.Initialize();
 
         Application.Run(new KnobControllerContext());
     }
@@ -29,7 +31,10 @@ public class KnobControllerContext : ApplicationContext
             Icon = new Icon("./AppIcon.ico", 512, 512),
             ContextMenuStrip = new ContextMenuStrip()
             {
-                Items = { new ToolStripMenuItem("Exit", null, Exit) }
+                Items = { 
+                    new ToolStripMenuItem("Connect", null, Connect),
+                    new ToolStripMenuItem("Exit", null, Exit),  
+                }
             },
             Visible = true,
             Text = "Knob Controller",
@@ -40,6 +45,11 @@ public class KnobControllerContext : ApplicationContext
     {
         trayIcon.Visible = false;
         Application.Exit();
+    }
+    
+    void Connect(object? sender, EventArgs e)
+    {
+        Controller.Initialize();
     }
 }
 
