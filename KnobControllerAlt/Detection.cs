@@ -16,7 +16,9 @@ public class Detection
         if (e.KeyboardState == GlobalKeyboardHook.KeyboardState.KeyUp) return;
 
         Key key = Tools.CodeToKey(e.KeyboardData.VirtualCode);
-
+        
+        Console.WriteLine(e.KeyboardData.VirtualCode);
+        
         if (key == Key.Other) return;
         
         Actions.RunActionForKey(key, Config.meta);

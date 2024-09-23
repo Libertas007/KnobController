@@ -1,4 +1,5 @@
 namespace KnobControllerAlt;
+using Microsoft.VisualBasic;
 
 static class Program
 {
@@ -32,8 +33,9 @@ public class KnobControllerContext : ApplicationContext
             ContextMenuStrip = new ContextMenuStrip()
             {
                 Items = { 
+                    new ToolStripMenuItem("Terminal", null, Terminal),
                     new ToolStripMenuItem("Connect", null, Connect),
-                    new ToolStripMenuItem("Exit", null, Exit),  
+                    new ToolStripMenuItem("Exit", null, Exit),
                 }
             },
             Visible = true,
@@ -50,6 +52,13 @@ public class KnobControllerContext : ApplicationContext
     void Connect(object? sender, EventArgs e)
     {
         Controller.Initialize();
+    }
+
+    void Terminal(object? sender, EventArgs e)
+    {
+        string command = Interaction.InputBox("Enter command: ", "Terminal");
+
+        Controller.SendCommand(command);
     }
 }
 

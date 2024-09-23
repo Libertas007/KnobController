@@ -9,6 +9,7 @@ namespace KnobControllerAlt;
 public class Actions
 {
     private static bool hand = false;
+    private static bool off = false;
     
     public static void RunActionForKey(Key key, bool meta)
     {
@@ -42,13 +43,44 @@ public class Actions
     public static void RunActionKey2(bool meta)
     {
         // camera
+        
+        var activeWindowTitle = GenericActions.GetActiveWindowTitle();
+
+        if (activeWindowTitle.Contains("Visual Studio Code"))
+        {
+            GenericActions.SendKeys(new [] { VirtualKeyCode.LMENU }, VirtualKeyCode.DOWN);
+        }
     }
     
     public static void RunActionKey3(bool meta)
     {
         // hand
+
+        if (meta)
+        {
+            if (Config.night)
+            {
+                Controller.NightMode();
+                Controller.Setup();
+                
+            }
+            else
+            {
+                Controller.NightMode();
+            }
+            
+            Config.SetMeta(false);
+            Config.SetNight(!Config.night);
+            return;
+        }
         
-        if (meta) return;
+        var activeWindowTitle = GenericActions.GetActiveWindowTitle();
+
+        if (activeWindowTitle.Contains("Visual Studio Code"))
+        {
+            GenericActions.SendKeys(new []{VirtualKeyCode.CONTROL}, VirtualKeyCode.OEM_3);
+            return;
+        }
 
         hand = !hand;
 
@@ -70,11 +102,13 @@ public class Actions
         
         if (Config.meta)
         {
+            Controller.AllOff();
+            Controller.ChangeLED(2, new Color(80, 10, 157), Effects.LIGHT);
             Controller.ChangeLED(3, Color.BLUE, Effects.BLINK);
         }
         else
         {
-            Controller.ChangeLED(3, Color.BLUE, Effects.LIGHT);
+            Controller.Setup();
         }
     }
     
@@ -86,6 +120,17 @@ public class Actions
     public static void RunActionKey6(bool meta)
     {
         // deepl
+        
+        var windows = GenericActions.GetOpenWindows().Values.ToList();
+
+        var activeWindowTitle = GenericActions.GetActiveWindowTitle();
+
+        if (activeWindowTitle.Contains("Visual Studio Code"))
+        {
+            GenericActions.SendKeys(new []{VirtualKeyCode.LMENU}, VirtualKeyCode.UP);
+            return;
+        }
+        
         GenericActions.SendKeys(new [] { VirtualKeyCode.CONTROL }, VirtualKeyCode.F9);
     }
     
@@ -98,6 +143,14 @@ public class Actions
     public static void RunActionKey8(bool meta)
     {
         // end call
+        var windows = GenericActions.GetOpenWindows().Values.ToList();
+
+        string? discord = windows.Find(s => s.Contains("Discord"));
+
+        if (discord != null)
+        {
+            GenericActions.SendKeysTo(discord, new [] { VirtualKeyCode.CONTROL, VirtualKeyCode.SHIFT }, VirtualKeyCode.VK_L);
+        }
     }
 }
 
@@ -127,11 +180,11 @@ public class GenericActions
     public static void SendKeysTo(string name, IEnumerable<VirtualKeyCode> modifierKeyCodes, VirtualKeyCode keyCode)
     {
         IntPtr current = GetForegroundWindow();
-        Thread.Sleep(1);
+        Thread.Sleep(5);
         ActivateWindow(name);
-        Thread.Sleep(1);
+        Thread.Sleep(5);
         SendKeys(modifierKeyCodes, keyCode);
-        Thread.Sleep(1);
+        Thread.Sleep(5);
         SetForegroundWindow(current);
 
     }

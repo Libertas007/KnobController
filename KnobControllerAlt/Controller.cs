@@ -13,17 +13,19 @@ public class Controller
 {
     static SerialPort port = new SerialPort();
         private static readonly HttpClient client = new HttpClient();
+        private static string[] portNames = Array.Empty<string>();
         
         public static void Initialize()
         {
+            port.ErrorReceived += OnError;
             if (SerialPort.GetPortNames().Length == 0)
             {
                 Environment.Exit(1);
             }
             
-            string portName = SerialPort.GetPortNames()[0];
-
-
+            string portName = SerialPort.GetPortNames().Where((s => s== "COM5")).FirstOrDefault("COM3");
+            portNames.Append(portName);
+            
             port.PortName = portName;
             port.BaudRate = 115200;
             port.Handshake = Handshake.None;
@@ -32,14 +34,27 @@ public class Controller
             Setup();
         }
 
-        static void NightMode()
+        private static void OnError(object sender, SerialErrorReceivedEventArgs args)
+        {
+            var valid = SerialPort.GetPortNames();
+
+            foreach (var portName in valid)
+            {
+                if (portNames.Contains(portName)) continue;
+                
+                port.PortName = portName;
+                port.Open();
+            }
+        }
+
+        public static void NightMode()
         {
             AllOff();
             ChangeBar(7, Color.OFF, Effects.LIGHT);
             client.GetAsync($"http://{Config.lightIp}/night");
         }
 
-        static void Setup()
+        public static void Setup()
         {
             AllWhite();
             ChangeLED(3, Color.BLUE, Effects.LIGHT);
@@ -137,10 +152,12 @@ public class Config
     private static bool hasChanged = false;
     public static readonly string defaultConfig = @"
 meta: false
+night: false
 ";
 
-    public static string lightIp = "192.168.44.34";
+    public static string lightIp = "192.168.44.61";
     public static bool meta;
+    public static bool night;
 
     public static void Initialize()
     {
@@ -157,7 +174,8 @@ meta: false
 
         data = deserializer.Deserialize<ConfigFileStructure>(input);
 
-        meta = data.meta;
+        meta = false;
+        night = false;
     }
 
     public static void SaveData()
@@ -182,10 +200,18 @@ meta: false
         data.meta = value;
         meta = value;
     }
+
+    public static void SetNight(bool value)
+    {
+        hasChanged = true;
+        data.night = value;
+        night = value;
+    }
 }
 
 public class ConfigFileStructure
 {
     public bool meta;
+    public bool night;
 }
 
